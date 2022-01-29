@@ -9,8 +9,11 @@ public with sharing class EmployeeSyncBatch implements Database.Batchable<SObjec
     }
 
     public Database.QueryLocator start(Database.BatchableContext BC){
+        String query = '';
         if(batchContext.equalsIgnoreCase(BATCH_CONTEXT_GET_S3_FILE)) {
-            String query = 'SELECT Id, EmployeeSyncEnabled__c from App_Config__c LIMIT 1';
+            query = 'SELECT Id, EmployeeSyncEnabled__c from App_Config__c LIMIT 1';
+        } else if(batchContext.equalsIgnoreCase(BATCH_CONTEXT_UPDATE_EMPLOYEES)) {
+            query = 'SELECT Id FROM Employee__c';
         }
         return Database.getQueryLocator(query);
     }
