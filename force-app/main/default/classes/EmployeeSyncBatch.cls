@@ -1,4 +1,4 @@
-public with sharing class EmployeeSyncBatch implements Database.Batchable<SObject>, Database.Stateful, Database.AllowsCallout {
+public with sharing class EmployeeSyncBatch implements Database.Batchable<SObject>, Database.Stateful, Database.AllowsCallouts {
 
     public String batchContext;
     public final String BATCH_CONTEXT_GET_S3_FILE = 'getS3File';
@@ -22,17 +22,25 @@ public with sharing class EmployeeSyncBatch implements Database.Batchable<SObjec
 
         if(batchContext.equalsIgnoreCase(BATCH_CONTEXT_GET_S3_FILE)) {
             // check Employee sync enabled
-            if(scope[0].EmployeeSyncEnabled__c) {
+            List<App_Config__c> appConfigList = (List<App_Config__c>) scope;
+            App_Config__c appConfigObj = appConfigList[0];
+            if(appConfigObj.EmployeeSyncEnabled__c) {
                 String getFileUrl = 'http://localhost:8080/gets3';
                 Http http = new Http();
                 HttpRequest httpRequest = new httpRequest();
                 httpRequest.setEndpoint(getFileUrl);
                 httpRequest.setMethod('GET');
                 HttpResponse res = http.send(httpRequest);
+                String responseBody = res.getBody();
+                System.debug('Response body ++' + responseBody);
             }
         } else if(batchContext.equalsIgnoreCase(BATCH_CONTEXT_UPDATE_EMPLOYEES)) {
             List<Employee__c> employees = (List<Employee__c>) scope;
         }
+
+    }
+
+    public void finish(Database.BatchableContext BC) {
 
     }
 }
