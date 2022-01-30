@@ -25,7 +25,7 @@ public with sharing class EmployeeSyncBatch implements Database.Batchable<SObjec
             List<App_Config__c> appConfigList = (List<App_Config__c>) scope;
             App_Config__c appConfigObj = appConfigList[0];
             if(appConfigObj.EmployeeSyncEnabled__c) {
-                String getFileUrl = 'http://localhost:8080/gets3';
+                String getFileUrl = 'http://localhost:8080/getS3File';
                 Http http = new Http();
                 HttpRequest httpRequest = new httpRequest();
                 httpRequest.setEndpoint(getFileUrl);
